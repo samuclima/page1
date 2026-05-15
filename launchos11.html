@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>LaunchOS — Anti‑Agency Marketing Infrastructure Operator</title>
+  <!-- Fonts: brutalist sans + monospace for technical details -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #0b0c0e;
+      --surface: #14161a;
+      --surface-raised: #1e2128;
+      --text-primary: #ebecef;
+      --text-secondary: #9a9da8;
+      --accent: #ff5e2c;    /* safety / industrial orange */
+      --accent-glow: #ff7a4d;
+      --danger: #ff3a2f;
+      --success: #2dd4bf;
+      --border: rgba(255, 255, 255, 0.06);
+      --shadow-lg: 0 25px 50px -12px rgba(0,0,0,0.5);
+      --radius: 16px;
+      --transition: 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.4;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Typography */
+    h1, h2, h3 {
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Utility */
+    .section-padding {
+      padding: 8rem 0;
+    }
+
+    .accent-text {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* Navigation */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+      background: rgba(11, 12, 14, 0.8);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: var(--transition);
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+    }
+    .logo span {
+      color: var(--accent);
+    }
+
+    .nav-cta {
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 0.6rem 1.4rem;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all var(--transition);
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .nav-cta:hover {
+      background: var(--accent);
+      color: #0b0c0e;
+    }
+
+    /* Buttons */
+    .btn-primary {
+      background: var(--accent);
+      color: #0b0c0e;
+      border: none;
+      padding: 1rem 2.2rem;
+      border-radius: 40px;
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+      transition: all var(--transition);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 8px 24px rgba(255, 94, 44, 0.25);
+      border: 1px solid transparent;
+    }
+    .btn-primary:hover {
+      background: #ff7a4d;
+      box-shadow: 0 12px 28px rgba(255, 94, 44, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 0.9rem 2rem;
+      border-radius: 40px;
+      font-weight: 600;
+      transition: all var(--transition);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Hero */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-content {
+      max-width: 750px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255, 94, 44, 0.12);
+      color: var(--accent);
+      padding: 0.3rem 1rem;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(255, 94, 44, 0.3);
+    }
+
+    .hero h1 {
+      font-size: clamp(3.2rem, 8vw, 5.2rem);
+      line-height: 1.05;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-highlight {
+      background: linear-gradient(120deg, var(--accent) 0%, #ff8c5a 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      max-width: 550px;
+      margin-bottom: 2.5rem;
+      line-height: 1.5;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .hero-visual {
+      position: absolute;
+      right: -5%;
+      top: 20%;
+      width: 45%;
+      height: 70%;
+      z-index: 1;
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    /* Animated grid */
+    .grid-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(rgba(255,94,44,0.08) 1px, transparent 1px);
+      background-size: 50px 50px;
+      mask-image: radial-gradient(ellipse at 70% 30%, black 30%, transparent 70%);
+      z-index: 0;
+    }
+
+    /* Live Build Tracker Section */
+    .tracker-section {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+
+    .tracker-grid {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .tracker-visual {
+      flex: 1.2;
+      min-width: 300px;
+      background: var(--surface-raised);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .tracker-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .live-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background: var(--success);
+      border-radius: 50%;
+      box-shadow: 0 0 12px var(--success);
+      margin-right: 0.5rem;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+    .step-list {
+      list-style: none;
+    }
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 0.8rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .step-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #0b0c0e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+    .step-content h4 {
+      font-size: 0.95rem;
+      margin-bottom: 0.2rem;
+    }
+    .step-content p {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    .completed .step-icon {
+      background: var(--success);
+    }
+    .in-progress .step-icon {
+      background: var(--accent);
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+    .tracker-text {
+      flex: 1;
+    }
+    .tracker-text h2 {
+      font-size: 2.4rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Pricing comparison */
+    .pricing-grid {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .pricing-card {
+      background: var(--surface-raised);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2.5rem 2rem;
+      flex: 1;
+      min-width: 250px;
+      transition: all var(--transition);
+      position: relative;
+    }
+    .pricing-card.launch {
+      border-color: var(--accent);
+      background: linear-gradient(145deg, #1a1c22 0%, #0f1115 100%);
+      box-shadow: 0 0 30px rgba(255, 94, 44, 0.2);
+    }
+    .price {
+      font-size: 3.2rem;
+      font-weight: 700;
+    }
+    .price span {
+      font-size: 1rem;
+      color: var(--text-secondary);
+    }
+
+    /* FAQ */
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+      padding: 1.8rem 0;
+      cursor: pointer;
+    }
+    .faq-question {
+      font-weight: 600;
+      font-size: 1.2rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Footer */
+    footer {
+      padding: 3rem 2rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    /* Scroll animations */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 768px) {
+      .hero-visual { display: none; }
+      .tracker-grid { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="logo">Launch<span>OS</span></div>
+    <a href="#pricing" class="nav-cta">See if it's a fit →</a>
+  </nav>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="grid-bg"></div>
+      <div class="container hero-content fade-up">
+        <div class="hero-badge">⚡ Anti‑Agency Infrastructure Operator</div>
+        <h1>
+          Stop paying agencies<br> to <span class="hero-highlight">learn your business.</span>
+        </h1>
+        <p class="mono" style="font-size:1rem;">
+          We build your entire marketing engine in 5 days.<br>
+          $349/mo. No retainers. No ghosting. No jargon.
+        </p>
+        <div class="hero-actions">
+          <a href="#" class="btn-primary">Book a zero‑pressure call</a>
+          <span style="color:var(--text-secondary); font-size:0.9rem;">Pause or cancel anytime</span>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <!-- abstract SVG of machine assembling -->
+        <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto;">
+          <circle cx="200" cy="200" r="150" stroke="var(--accent)" stroke-width="2" stroke-dasharray="8 8" opacity="0.6"/>
+          <path d="M80 280 L140 200 L200 240 L260 160 L320 200" stroke="var(--accent)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="140" cy="200" r="6" fill="var(--accent)"/>
+          <circle cx="200" cy="240" r="6" fill="var(--accent)"/>
+          <circle cx="260" cy="160" r="6" fill="var(--accent)"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- Agitation & Problem -->
+    <section class="section-padding" style="padding-top:4rem;">
+      <div class="container fade-up">
+        <h2 style="font-size:2.5rem; margin-bottom:2rem;">You’ve been burned before.<br>We built LaunchOS to end that.</h2>
+        <div style="display:flex; gap:2rem; flex-wrap:wrap; margin-top:3rem;">
+          <div style="flex:1; min-width:250px;">
+            <p class="mono" style="color:var(--danger); font-weight:600;">“I was promised sales... £4000 was my life’s savings.”</p>
+            <p class="mono" style="color:var(--text-secondary); margin-top:1rem;">“Freelancer took 50% deposit, delivered nothing, then ghosted.”</p>
+          </div>
+          <div style="flex:1; min-width:250px;">
+            <p style="font-size:1.1rem;">Agencies sell you billable hours. Freelancers vanish. Software leaves you staring at a blank canvas. We do the exact opposite: a dedicated human operator builds your CRM, landing pages, and automations while you watch it happen live.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Live Build Tracker (Trust) -->
+    <section class="tracker-section section-padding">
+      <div class="container tracker-grid fade-up">
+        <div class="tracker-visual">
+          <div class="tracker-header">
+            <span><span class="live-dot"></span> LIVE BUILD · Client #4289</span>
+            <span class="mono" style="color:var(--accent);">Day 3 of 5</span>
+          </div>
+          <ul class="step-list">
+            <li class="step-item completed">
+              <div class="step-icon">✓</div>
+              <div class="step-content"><h4>CRM & Pipeline configured</h4><p>GoHighLevel / HubSpot tailored to your services</p></div>
+            </li>
+            <li class="step-item completed">
+              <div class="step-icon">✓</div>
+              <div class="step-content"><h4>Landing page deployed</h4><p>Conversion-focused, mobile-first</p></div>
+            </li>
+            <li class="step-item in-progress">
+              <div class="step-icon">⚡</div>
+              <div class="step-content"><h4>SMS & email automations</h4><p>Booking reminders, follow-up sequences</p></div>
+            </li>
+            <li class="step-item">
+              <div class="step-icon">4</div>
+              <div class="step-content"><h4>Calendar & payment links</h4><p>Seamless integration</p></div>
+            </li>
+            <li class="step-item">
+              <div class="step-icon">5</div>
+              <div class="step-content"><h4>Handover + 30-day support</h4><p>You own everything, no lock-in</p></div>
+            </li>
+          </ul>
+        </div>
+        <div class="tracker-text">
+          <h2>Watch your infrastructure <span class="accent-text">come to life</span> in real time.</h2>
+          <p style="color:var(--text-secondary); margin:1rem 0 2rem;">No more black boxes. No more “we’re working on it.” Our Live Build Tracker proves the work is done, on schedule, by a real human.</p>
+          <div style="display:flex; gap:1rem;">
+            <span class="mono" style="background:var(--surface-raised); padding:0.5rem 1rem; border-radius:20px;">⏱️ 2–5 day delivery</span>
+            <span class="mono" style="background:var(--surface-raised); padding:0.5rem 1rem; border-radius:20px;">🔒 No upfront deposit risk</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- What you get (Scope) -->
+    <section class="section-padding">
+      <div class="container fade-up">
+        <h2 style="font-size:2.5rem; margin-bottom:1rem;">Your dedicated operator <span class="accent-text">builds everything.</span></h2>
+        <p style="color:var(--text-secondary); max-width:600px; margin-bottom:3rem;">You never touch a workflow, write a line of code, or configure an API. Just answer a few simple questions and we handle the rest.</p>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:1.5rem;">
+          <div class="pricing-card"><h4>CRM Setup</h4><p>Pipelines, deal stages, lead scoring</p></div>
+          <div class="pricing-card"><h4>Landing Pages</h4><p>High-converting, mobile-optimized</p></div>
+          <div class="pricing-card"><h4>SMS & Email Flows</h4><p>Booking confirmations, nurture sequences</p></div>
+          <div class="pricing-card"><h4>Calendar Integration</h4><p>Acuity, Calendly, or native</p></div>
+          <div class="pricing-card"><h4>Payment Links</h4><p>Stripe, Square, or invoicing</p></div>
+          <div class="pricing-card"><h4>Tracking & Analytics</h4><p>FB pixel, GTM, attribution</p></div>
+          <div class="pricing-card"><h4>Reputation Management</h4><p>Review request automations</p></div>
+          <div class="pricing-card"><h4>30-day Handholding</h4><p>We don’t disappear after launch</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing & Anchoring -->
+    <section id="pricing" class="section-padding" style="background:var(--surface);">
+      <div class="container fade-up">
+        <h2 style="font-size:2.5rem; text-align:center; margin-bottom:0.5rem;">One flat price. <span class="accent-text">Radical value.</span></h2>
+        <p style="text-align:center; color:var(--text-secondary); margin-bottom:3rem;">Compare to what you’ve been paying for empty promises.</p>
+        <div class="pricing-grid">
+          <div class="pricing-card">
+            <p class="mono" style="color:var(--danger);">Typical Agency Retainer</p>
+            <div class="price">$4,000<span>/mo</span></div>
+            <p style="margin-top:1rem;">Minimum 3-month lock-in, hourly billing, strategy decks, no tangible infrastructure.</p>
+          </div>
+          <div class="pricing-card launch">
+            <p class="mono" style="color:var(--accent);">LaunchOS Operator</p>
+            <div class="price">$349<span>/mo</span></div>
+            <p style="margin-top:1rem;"><strong>5-day build, then maintain.</strong> Pause or cancel anytime. No lock-in. You own the tech.</p>
+            <a href="#" class="btn-primary" style="margin-top:1.5rem;">Claim your build slot</a>
+            <p style="font-size:0.8rem; margin-top:0.8rem; color:var(--text-secondary);">No questions asked money-back guarantee if we miss delivery.</p>
+          </div>
+          <div class="pricing-card">
+            <p class="mono" style="color:var(--danger);">Freelancer Roulette</p>
+            <div class="price">$100<span>/hr</span></div>
+            <p style="margin-top:1rem;">Uncertain timelines, ghosting risk, broken code, no accountability.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Guarantees & Risk Reversal -->
+    <section class="section-padding">
+      <div class="container fade-up" style="text-align:center;">
+        <h2 style="font-size:2.5rem;">The LaunchOS <span class="accent-text">No‑BS Guarantee</span></h2>
+        <div style="display:flex; gap:2rem; justify-content:center; flex-wrap:wrap; margin-top:3rem;">
+          <div style="max-width:280px;"><span style="font-size:2.5rem;">🛡️</span><h4>No upfront deposit</h4><p>You only pay after we start building. No “50% to begin” scams.</p></div>
+          <div style="max-width:280px;"><span style="font-size:2.5rem;">⏸️</span><h4>Pause or cancel anytime</h4><p>Seasonal business? Pause your subscription with one click. No hoops.</p></div>
+          <div style="max-width:280px;"><span style="font-size:2.5rem;">⚡</span><h4>5‑day delivery or it’s free</h4><p>If your infrastructure isn’t live in 5 business days, you don’t pay a cent.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials placeholder -->
+    <section class="section-padding" style="background:var(--surface);">
+      <div class="container fade-up">
+        <h2 style="font-size:2.5rem; margin-bottom:2rem;">Trusted by <span class="accent-text">cynical owners</span> who’d been burned before.</h2>
+        <div style="display:flex; gap:2rem; flex-wrap:wrap;">
+          <div style="flex:1; min-width:250px; background:var(--surface-raised); padding:2rem; border-radius:var(--radius);">
+            <p>“I’d lost $6k to two agencies. LaunchOS built my entire booking system in 4 days. I finally get direct leads instead of sharing tire‑kickers from Angi.”</p>
+            <p class="mono" style="color:var(--accent); margin-top:1rem;">— Mark R., HVAC owner</p>
+          </div>
+          <div style="flex:1; min-width:250px; background:var(--surface-raised); padding:2rem; border-radius:var(--radius);">
+            <p>“GoHighLevel gave me anxiety. They configured everything, handed me the keys, and now it just works. The live tracker was incredible.”</p>
+            <p class="mono" style="color:var(--accent); margin-top:1rem;">— Dr. Lisa M., MedSpa</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section-padding">
+      <div class="container fade-up" style="max-width:800px; margin:0 auto;">
+        <h2 style="font-size:2.5rem; margin-bottom:2rem;">Straight answers. <span class="accent-text">No fluff.</span></h2>
+        <div class="faq-item"><div class="faq-question">Do I own my leads and data? <span>+</span></div><p style="color:var(--text-secondary); margin-top:0.5rem;">Absolutely. Everything is built in your own accounts. You own the CRM, pages, and contacts 100%.</p></div>
+        <div class="faq-item"><div class="faq-question">What if I’m not technical at all? <span>+</span></div><p style="color:var(--text-secondary); margin-top:0.5rem;">Perfect. You don’t need to be. Our operator asks simple questions, then does all the technical work. You just use the system.</p></div>
+        <div class="faq-item"><div class="faq-question">Is there a long-term contract? <span>+</span></div><p style="color:var(--text-secondary); margin-top:0.5rem;">No. Month-to-month. Pause or cancel anytime. We even remind you if you haven’t used it.</p></div>
+        <div class="faq-item"><div class="faq-question">How fast do I see results? <span>+</span></div><p style="color:var(--text-secondary); margin-top:0.5rem;">Your infrastructure is live within 5 business days. Then it’s ready to capture exclusive leads immediately—no waiting on campaigns.</p></div>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section style="text-align:center; padding:6rem 2rem; background:var(--surface);">
+      <div class="fade-up">
+        <h2 style="font-size:3rem;">Ready to fire your agency <br>and <span class="accent-text">own your pipeline?</span></h2>
+        <p style="color:var(--text-secondary); margin:1.5rem 0;">One call. No pressure. We’ll see if you’re a fit.</p>
+        <a href="#" class="btn-primary" style="font-size:1.2rem; padding:1.2rem 3rem;">See if LaunchOS is right for you →</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© LaunchOS — The Anti‑Agency Infrastructure Operator. Built for the burned, the busy, and the bold.</p>
+  </footer>
+
+  <script>
+    // Intersection Observer for fade-up animations
+    const fadeElements = document.querySelectorAll('.fade-up');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.2, rootMargin: "0px 0px -50px 0px" });
+
+    fadeElements.forEach(el => observer.observe(el));
+
+    // FAQ toggle
+    document.querySelectorAll('.faq-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const answer = item.querySelector('p');
+        const icon = item.querySelector('span');
+        if (answer.style.display === 'block') {
+          answer.style.display = 'none';
+          icon.textContent = '+';
+        } else {
+          answer.style.display = 'block';
+          icon.textContent = '−';
+        }
+      });
+    });
+
+    // Nav scroll effect
+    window.addEventListener('scroll', () => {
+      const nav = document.querySelector('.nav');
+      if (window.scrollY > 50) {
+        nav.style.background = 'rgba(11,12,14,0.95)';
+      } else {
+        nav.style.background = 'rgba(11,12,14,0.8)';
+      }
+    });
+  </script>
+</body>
+</html>
